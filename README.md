@@ -21,6 +21,7 @@
 
 ```bash
 python3 jichou.py
+```
 
 ## 许可
 
