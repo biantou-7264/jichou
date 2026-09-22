@@ -279,11 +279,11 @@ if len(sys.argv) > 1:
 
         def term_rank_sort(values):
             a = {}
-            for i in values:
-                if i in a:
-                    a[i] += 1
+            for value1 in values:
+                if value1 in a:
+                    a[value1] += 1
                 else:
-                    a[i] = 1
+                    a[value1] = 1
             return dict(sorted(a.items(), key=lambda x: x[1], reverse=True))
 
 
@@ -318,7 +318,8 @@ if len(sys.argv) > 1:
                       'v8.0': 'rank命令',
                       'v9.0': 'version命令',
                       'v10.0': '格式化rank show version命令输出',
-                      'v11.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__}
+                      'v11.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__,
+                      'v11.1': '修复了一些IDE提示的部分弱警告'}
         print('===记仇本===')
         print('版本: v9.0')
         print('作者: biantou')
@@ -372,11 +373,11 @@ def read():
     global unlock, jichou_file
     try:
         if not unlock:
-            user_input = sd.askstring('记仇本已锁定', '请输入密码')
-            if user_input is not None:
-                if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
+            user_input1 = sd.askstring('记仇本已锁定', '请输入密码')
+            if user_input1 is not None:
+                if sha512(user_input1.encode('utf-8')).hexdigest() == PASSWORD:
                     if jichou_file == ORIG_JICHOU_FILE:
-                        jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+                        jichou_file = os.path.join(jichou_file, '/'.join(user_input1), 'data.jichou')
                         print('111')
                     unlock = True
                 else:
@@ -388,45 +389,45 @@ def read():
                 root.quit()
                 return
         print(jichou_file)
-        for item in tree.get_children():
-            tree.delete(item)
-        with open(jichou_file, 'r') as file:
-            for line in file:
-                data = line.rstrip()
-                datas = data.split('|')
+        for item1 in tree.get_children():
+            tree.delete(item1)
+        with open(jichou_file, 'r') as file1:
+            for line1 in file1:
+                data1 = line1.rstrip()
+                datas = data1.split('|')
                 tree.insert('', tk.END, text='#%d' % (len(tree.get_children()) + 1), values=tuple(datas))
     except FileNotFoundError:
-        with open(jichou_file, 'w') as file:
-            file.write('0|0|0')
+        with open(jichou_file, 'w') as file2:
+            file2.write('0|0|0')
         root.after(100, read)
-    except Exception as e:
-        print(e)
+    except Exception as e1:
+        print(e1)
     root.focus_force()
 
 
 def delete():
     row = tree.selection()
     if row is not None:
-        user_choice = mb.askyesno('提示', '你确定要删除此项吗')
-        if not user_choice:
+        user_choice1 = mb.askyesno('提示', '你确定要删除此项吗')
+        if not user_choice1:
             return
         tree.delete(row[0])
-        context = []
-        items = tree.get_children()
-        for item in items:
-            i = tree.item(item, 'values')
-            context.append('|'.join(i))
+        context1 = []
+        items1 = tree.get_children()
+        for item1 in items1:
+            i2 = tree.item(item1, 'values')
+            context1.append('|'.join(i2))
         new_context = []
-        for line in context:
-            new_context.append(line.rstrip('\n') + '\n')
+        for line2 in context:
+            new_context.append(line2.rstrip('\n') + '\n')
         temp = new_context.pop(-1)
         new_context.append(temp.rstrip('\n'))
         try:
-            with open(jichou_file, 'w') as file:
-                for line in new_context:
-                    file.write(line)
-        except Exception as e:
-            mb.showerror('错误', '%s:%s' % (type(e).__name__, e))
+            with open(jichou_file, 'w') as file2:
+                for line3 in new_context:
+                    file2.write(line3)
+        except Exception as e1:
+            mb.showerror('错误', '%s:%s' % (type(e).__name__, e1))
     root.focus_force()
 
 
@@ -440,26 +441,26 @@ def get_select():
 
 
 def new():
-    people = sd.askstring('提示', '请输入仇人名字')
-    if people is None:
+    people1 = sd.askstring('提示', '请输入仇人名字')
+    if people1 is None:
         mb.showinfo('提示', '你取消了输入')
         return
-    time = sd.askstring('提示', '请输入事情发生时间')
-    if time is None:
+    time1 = sd.askstring('提示', '请输入事情发生时间')
+    if time1 is None:
         mb.showinfo('提示', '你取消了输入')
         return
-    thing = sd.askstring('提示', '请输入发生的事情')
-    if thing is None:
+    thing1 = sd.askstring('提示', '请输入发生的事情')
+    if thing1 is None:
         mb.showinfo('提示', '你取消了输入')
         return
-    user_choice = mb.askyesno('提示', '请核对信息:\n仇人:%s\n时间:%s\n事情:%s' % (people, time, thing))
-    if user_choice:
+    user_choice1 = mb.askyesno('提示', '请核对信息:\n仇人:%s\n时间:%s\n事情:%s' % (people1, time1, thing1))
+    if user_choice1:
         try:
-            with open(jichou_file, 'a') as file:
-                file.write('\n')
-                file.write('%s|%s|%s' % (people, time, thing))
-        except Exception as e:
-            print(e)
+            with open(jichou_file, 'a') as file1:
+                file1.write('\n')
+                file1.write('%s|%s|%s' % (people, time, thing))
+        except Exception as e2:
+            print(e2)
         mb.showinfo('提示', '成功添加,点击确定后更新数据')
         root.after(100, read)
     else:
@@ -483,24 +484,23 @@ class Rank:
         self.show()
 
     def show(self):
-        c = 0
-        all_people = []
-        for i in [tree.item(item, 'values') for item in tree.get_children()]:
-            people, _, _ = i
-            all_people.append(people)
-        rank = self.sort(all_people)
-        c = 0
-        for people, count in rank.items():
-            c += 1
-            self.tree.insert('', 'end', text='第%d名' % c, values=(people, count))
+        all_people2 = []
+        for i2 in [tree.item(item3, 'values') for item3 in tree.get_children()]:
+            people3, _, _ = i2
+            all_people2.append(people3)
+        rank2 = self.sort(all_people2)
+        c1 = 0
+        for people4, count3 in rank2.items():
+            c1 += 1
+            self.tree.insert('', 'end', text='第%d名' % c1, values=(people4, count3))
 
     def sort(self, values):
         a = {}
-        for i in values:
-            if i in a:
-                a[i] += 1
+        for i4 in values:
+            if i4 in a:
+                a[i4] += 1
             else:
-                a[i] = 1
+                a[i4] = 1
         return dict(sorted(a.items(), key=lambda x: x[1], reverse=True))
 
 
