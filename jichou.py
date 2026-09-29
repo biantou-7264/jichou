@@ -318,8 +318,10 @@ if len(sys.argv) > 1:
                       'v8.0': 'rank命令',
                       'v9.0': 'version命令',
                       'v10.0': '格式化rank show version命令输出',
-                      'v11.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__,
-                      'v11.1': '修复了一些IDE提示的部分弱警告'}
+                      'v11.0': '现在将储存为data.jichou文件',
+                      'v12.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__,
+                      'v12.1': '修复了一些IDE提示的部分弱警告',
+                      'v12.2': '修复了更新日志问题'}
         print('===记仇本===')
         print('版本: v9.0')
         print('作者: biantou')
