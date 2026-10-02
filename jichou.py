@@ -1,12 +1,15 @@
 import os
-import tkinter as tk
-from tkinter import ttk
-from tkinter import simpledialog as sd
-from tkinter import messagebox as mb
-from hashlib import sha512
 import sys
+import tkinter as tk
+from hashlib import sha512
+from tkinter import messagebox as mb
+from tkinter import simpledialog as sd
+from tkinter import ttk
 
-JICHOU_TERM_TITLE = '===记仇本==='
+PROGRAM_EXIT_PROMPT = '\n程序退出'
+PLEASE_INPUT_PASSWORD_PROMPT = '请输入密码:'  # noqa
+ASK_PASSWORD_PROMPT = 'password: '
+JICHOU_TERM_TITLE = '====记仇本===='
 YOU_CANCEL_TIP = '你取消了输入'
 PASSWORD_HASH_TXT = 'PASSWORD-HASH.txt'
 PASSWORD_ERROR_TIP = '密码错误,请重试!'  # noqa
@@ -38,13 +41,14 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
     print('密码必须4位数!')
 
     while True:
-        user_input = input('password: ')
+        user_input = input(ASK_PASSWORD_PROMPT)
         if len(user_input) == 4:
             break
         else:
             print('密码必须4位数!')
     jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
 
+    print('正在初始化...')
     for i in range(1, 10):
         os.mkdir(os.path.join(root_path, str(i)))
     for i in range(1, 10):
@@ -75,6 +79,7 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
         file.write(sha512(user_input.encode('utf-8')).hexdigest())
 
     PASSWORD = sha512(user_input.encode('utf-8')).hexdigest()
+    print('初始化完成')
 
 if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'readme.txt')):
     with open(os.path.join(com_biantou_jichou, 'framework', 'readme.txt'), 'w') as file:
@@ -101,7 +106,7 @@ if 'api' in sys.argv:
         try:
             with open(jichou_file, 'a') as file:
                 file.write('\n')
-                file.write('%s|%s|%s' % (people, time, thing))
+                file.write('%s|%s|%s' % (people, time, thing))  # noqa
             print('成功')
         except Exception as e:
             print(e)
@@ -158,11 +163,11 @@ if 'api' in sys.argv:
 
 if len(sys.argv) > 1:
     if 'new' in sys.argv:
-        print('====记仇本====')
+        print(JICHOU_TERM_TITLE)
         print('--添加一条--')
-        print('请输入密码:')
+        print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
-            user_input = input('password: ')
+            user_input = input(ASK_PASSWORD_PROMPT)
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
@@ -188,11 +193,11 @@ if len(sys.argv) > 1:
         sys.exit()
 
     if 'del' in sys.argv:
-        print('====记仇本====')
+        print(JICHOU_TERM_TITLE)
         print('--删除一条--')
-        print('请输入密码:')
+        print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
-            user_input = input('password: ')
+            user_input = input(ASK_PASSWORD_PROMPT)
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
@@ -241,11 +246,11 @@ if len(sys.argv) > 1:
         sys.exit()
 
     if 'show' in sys.argv:
-        print('====记仇本====')
+        print(JICHOU_TERM_TITLE)
         print('--显示内容--')
-        print('请输入密码:')
+        print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
-            user_input = input('password: ')
+            user_input = input(ASK_PASSWORD_PROMPT)
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
@@ -262,18 +267,19 @@ if len(sys.argv) > 1:
                     num_space_name = 20 - (len(name) * 2) - (len(str(num)) - 1)
                     name_space_time = 20 - len(time)
                     time_space_thing = 30 - (len(thing) * 2)
-                    print('%d%s%s%s%s%s%s' % (num, ' ' * num_space_name, name, ' ' * name_space_time, time, ' ' * time_space_thing, thing))
+                    print('%d%s%s%s%s%s%s' % (num, ' ' * num_space_name, name, ' ' * name_space_time, time,
+                                              ' ' * time_space_thing, thing))
         except Exception as e:
             print(e)
         print('程序退出')
         sys.exit()
 
     if 'rank' in sys.argv:
-        print('====记仇本====')
+        print(JICHOU_TERM_TITLE)
         print('--排行榜--')
-        print('请输入密码:')
+        print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
-            user_input = input('password: ')
+            user_input = input(ASK_PASSWORD_PROMPT)
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
@@ -310,7 +316,7 @@ if len(sys.argv) > 1:
         except Exception as e:
             print(e)
 
-        print('\n程序退出')
+        print(PROGRAM_EXIT_PROMPT)
         sys.exit()
 
     if 'version' in sys.argv:
@@ -328,7 +334,8 @@ if len(sys.argv) > 1:
                       'v12.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__,
                       'v12.1': '修复了一些IDE提示的部分弱警告',
                       'v12.2': '修复了更新日志问题',
-                      'v12.3': '修复了部分的SonarQube Issues'}
+                      'v12.3': '修复了部分的SonarQube Issues',
+                      'v12.4': '修复了部分的SonarQube Issues, 优化代码'}
         print(JICHOU_TERM_TITLE)
         print('版本: v9.0')
         print('作者: biantou')
@@ -337,7 +344,7 @@ if len(sys.argv) > 1:
         for key, value in changelogs.items():
             key_space_colon = ' ' * (10 - len(key) - 1)
             print('%s%s: %s' % (key, key_space_colon, value))
-        print('\n程序退出')
+        print(PROGRAM_EXIT_PROMPT)
         sys.exit()
 
     if 'help' in sys.argv:
@@ -349,7 +356,7 @@ if len(sys.argv) > 1:
         print('rank: 显示排行榜')
         print('help: 显示此帮助信息')
         print('version: 显示版本信息')
-        print('\n程序退出')
+        print(PROGRAM_EXIT_PROMPT)
         sys.exit()
 
     print(JICHOU_TERM_TITLE)
@@ -374,9 +381,10 @@ if len(sys.argv) > 1:
     print('rank: 显示排行榜')
     print('help: 显示此帮助信息')
     print('version: 显示版本信息')
-    print('\n程序退出')
+    print(PROGRAM_EXIT_PROMPT)
     sys.exit()
 
+print('加载GUI中...')
 
 def read():
     global unlock, jichou_file
@@ -474,6 +482,7 @@ def new():
         mb.showinfo('提示', '你取消了选择')
     root.focus_force()
 
+
 def add_to_shell():
     mb.showinfo('提示', '请在终端rc文件里面添加alias jichou="%s %s term"' % (sys.executable, __file__))
 
@@ -515,8 +524,7 @@ root = tk.Tk()
 root.title('记仇本')
 root.configure(bg='#0000c8')
 
-title = tk.Label(root, text='记仇本', bg='#0000c8', fg='white', font=('Arial', 30))
-title.pack()
+tk.Label(root, text='记仇本', bg='#0000c8', fg='white', font=('Arial', 30)).pack()
 
 style = ttk.Style()
 style.configure('Treeview.Heading', font=('Arial', 20))
@@ -533,19 +541,16 @@ tree.column('time', width=250)
 tree.column('thing', width=250)
 tree.pack(fill=tk.BOTH, expand=True)
 
-new_btn = tk.Button(root, text='添加一项', command=new, font=('Arial', 20))
-new_btn.pack(fill=tk.X, padx=50)
-re_btn = tk.Button(root, text='刷新列表', command=read, font=('Arial', 20))
-re_btn.pack(fill=tk.X, padx=50)
-del_btn = tk.Button(root, text='删除选中项', command=delete, font=('Arial', 20))
-del_btn.pack(fill=tk.X, padx=50)
-rank_btn = tk.Button(root, text='排行榜', command=lambda: Rank(), font=('Arial', 20))
-rank_btn.pack(fill=tk.X, padx=50)
-add_to_shell_btn = tk.Button(root, text='添加到终端', font=('Arial', 20), command=add_to_shell)
-add_to_shell_btn.pack(fill=tk.X, padx=50)
-tk.Label(root, text='君子报仇，十年不晚。                              ——《史记》', font=('Arial', 20), fg='white', bg='#0000c8', anchor=tk.W).pack(fill=tk.X, padx=10, expand=True, anchor=tk.W)
+tk.Button(root, text='添加一项', command=new, font=('Arial', 20)).pack(fill=tk.X, padx=50)
+tk.Button(root, text='刷新列表', command=read, font=('Arial', 20)).pack(fill=tk.X, padx=50)
+tk.Button(root, text='删除选中项', command=delete, font=('Arial', 20)).pack(fill=tk.X, padx=50)
+tk.Button(root, text='排行榜', command=lambda: Rank(), font=('Arial', 20)).pack(fill=tk.X, padx=50)
+tk.Button(root, text='添加到终端', font=('Arial', 20), command=add_to_shell).pack(fill=tk.X, padx=50)
+tk.Label(root, text='君子报仇，十年不晚。                              ——《史记》', font=('Arial', 20), fg='white',
+         bg='#0000c8', anchor=tk.W).pack(fill=tk.X, padx=10, expand=True, anchor=tk.W)
 
 root.after(100, read)
 
+print('加载完成')
 root.focus_force()
 root.mainloop()
