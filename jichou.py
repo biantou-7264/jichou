@@ -6,6 +6,12 @@ from tkinter import messagebox as mb
 from hashlib import sha512
 import sys
 
+JICHOU_TERM_TITLE = '===记仇本==='
+YOU_CANCEL_TIP = '你取消了输入'
+PASSWORD_HASH_TXT = 'PASSWORD-HASH.txt'
+PASSWORD_ERROR_TIP = '密码错误,请重试!'  # noqa
+DATA_JICHOU = 'data.jichou'
+
 USER_NAME = os.getenv('USER')
 if USER_NAME == 'root':
     print('不要使用root权限运行!')
@@ -14,8 +20,8 @@ ORIG_JICHOU_FILE = '/Users/%s/Library/Application Support/com.biantou.jichou/fra
 jichou_file = ORIG_JICHOU_FILE
 com_biantou_jichou = '/Users/%s/Library/Application Support/com.biantou.jichou/' % USER_NAME
 unlock = False
-if os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'PASSWORD-HASH.txt')):
-    with open(os.path.join(com_biantou_jichou, 'framework', 'PASSWORD-HASH.txt'), 'r') as file:
+if os.path.exists(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT)):
+    with open(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT), 'r') as file:
         PASSWORD = file.read()
 else:
     PASSWORD = None
@@ -37,7 +43,7 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
             break
         else:
             print('密码必须4位数!')
-    jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+    jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
 
     for i in range(1, 10):
         os.mkdir(os.path.join(root_path, str(i)))
@@ -65,7 +71,7 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
                         with open(os.path.join(root_path, str(i), str(j), str(k), str(l), '密码错误'), 'w') as file:
                             file.write('密码错误')
 
-    with open(os.path.join(com_biantou_jichou, 'framework', 'PASSWORD-HASH.txt'), 'w') as file:
+    with open(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT), 'w') as file:
         file.write(sha512(user_input.encode('utf-8')).hexdigest())
 
     PASSWORD = sha512(user_input.encode('utf-8')).hexdigest()
@@ -91,7 +97,7 @@ if 'api' in sys.argv:
         time = sys.argv[4]
         thing = sys.argv[5]
         user_password = sys.argv[6]
-        jichou_file = os.path.join(jichou_file, '/'.join(user_password), 'data.jichou')
+        jichou_file = os.path.join(jichou_file, '/'.join(user_password), DATA_JICHOU)
         try:
             with open(jichou_file, 'a') as file:
                 file.write('\n')
@@ -108,7 +114,7 @@ if 'api' in sys.argv:
             print(e)
             sys.exit()
         user_password = sys.argv[4]
-        jichou_file = os.path.join(jichou_file, '/'.join(user_password), 'data.jichou')
+        jichou_file = os.path.join(jichou_file, '/'.join(user_password), DATA_JICHOU)
         items = []
         try:
             with open(jichou_file, 'r') as file:
@@ -133,7 +139,7 @@ if 'api' in sys.argv:
 
     if 'show' in sys.argv:
         user_password = sys.argv[3]
-        jichou_file = os.path.join(jichou_file, '/'.join(user_password), 'data.jichou')
+        jichou_file = os.path.join(jichou_file, '/'.join(user_password), DATA_JICHOU)
         items = []
         try:
             with open(jichou_file, 'r') as file:
@@ -158,10 +164,10 @@ if len(sys.argv) > 1:
         while True:
             user_input = input('password: ')
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
-                jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+                jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
-                print('密码错误,请重试!')
+                print(PASSWORD_ERROR_TIP)
         print('开始记仇')
         people = input('仇人名字: ')
         time = input('发生时间: ')
@@ -188,10 +194,10 @@ if len(sys.argv) > 1:
         while True:
             user_input = input('password: ')
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
-                jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+                jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
-                print('密码错误,请重试!')
+                print(PASSWORD_ERROR_TIP)
         print('请选择删除项')
         num = 0
         items = []
@@ -241,10 +247,10 @@ if len(sys.argv) > 1:
         while True:
             user_input = input('password: ')
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
-                jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+                jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
-                print('密码错误,请重试!')
+                print(PASSWORD_ERROR_TIP)
         print('\n====记仇内容====')
         num = 0
         try:
@@ -269,10 +275,10 @@ if len(sys.argv) > 1:
         while True:
             user_input = input('password: ')
             if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
-                jichou_file = os.path.join(jichou_file, '/'.join(user_input), 'data.jichou')
+                jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
-                print('密码错误,请重试!')
+                print(PASSWORD_ERROR_TIP)
 
         print('====排行榜====')
 
@@ -321,8 +327,9 @@ if len(sys.argv) > 1:
                       'v11.0': '现在将储存为data.jichou文件',
                       'v12.0': '增加了适合外部程序的api, 可用python3 %s api help查询, 不要用jichou命令调用api' % __file__,
                       'v12.1': '修复了一些IDE提示的部分弱警告',
-                      'v12.2': '修复了更新日志问题'}
-        print('===记仇本===')
+                      'v12.2': '修复了更新日志问题',
+                      'v12.3': '修复了部分的SonarQube Issues'}
+        print(JICHOU_TERM_TITLE)
         print('版本: v9.0')
         print('作者: biantou')
         print('=' * 30)
@@ -334,7 +341,7 @@ if len(sys.argv) > 1:
         sys.exit()
 
     if 'help' in sys.argv:
-        print('===记仇本===')
+        print(JICHOU_TERM_TITLE)
         print('使用: jichou [new] [del] [show] [rank] [help] [version]')
         print('\nnew: 新增一条')
         print('del: 选择一条并删除')
@@ -345,7 +352,7 @@ if len(sys.argv) > 1:
         print('\n程序退出')
         sys.exit()
 
-    print('===记仇本===')
+    print(JICHOU_TERM_TITLE)
     argv = sys.argv.copy()
     if 'term' in argv:
         argv.remove('term')
@@ -376,19 +383,17 @@ def read():
     try:
         if not unlock:
             user_input1 = sd.askstring('记仇本已锁定', '请输入密码')
-            if user_input1 is not None:
-                if sha512(user_input1.encode('utf-8')).hexdigest() == PASSWORD:
-                    if jichou_file == ORIG_JICHOU_FILE:
-                        jichou_file = os.path.join(jichou_file, '/'.join(user_input1), 'data.jichou')
-                        print('111')
-                    unlock = True
-                else:
-                    mb.showinfo('提示', '密码错误')
-                    root.after(10, read)
-                    return
-            else:
+            if user_input1 is None:
                 mb.showinfo('提示', '你没输密码,即将退出程序')
-                root.quit()
+                root.destroy()
+                return
+            if sha512(user_input1.encode('utf-8')).hexdigest() == PASSWORD:
+                if jichou_file == ORIG_JICHOU_FILE:
+                    jichou_file = os.path.join(jichou_file, '/'.join(user_input1), DATA_JICHOU)
+                unlock = True
+            else:
+                mb.showinfo('提示', '密码错误')
+                root.after(10, read)
                 return
         print(jichou_file)
         for item1 in tree.get_children():
@@ -445,15 +450,15 @@ def get_select():
 def new():
     people1 = sd.askstring('提示', '请输入仇人名字')
     if people1 is None:
-        mb.showinfo('提示', '你取消了输入')
+        mb.showinfo('提示', YOU_CANCEL_TIP)
         return
     time1 = sd.askstring('提示', '请输入事情发生时间')
     if time1 is None:
-        mb.showinfo('提示', '你取消了输入')
+        mb.showinfo('提示', YOU_CANCEL_TIP)
         return
     thing1 = sd.askstring('提示', '请输入发生的事情')
     if thing1 is None:
-        mb.showinfo('提示', '你取消了输入')
+        mb.showinfo('提示', YOU_CANCEL_TIP)
         return
     user_choice1 = mb.askyesno('提示', '请核对信息:\n仇人:%s\n时间:%s\n事情:%s' % (people1, time1, thing1))
     if user_choice1:
