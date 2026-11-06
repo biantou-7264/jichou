@@ -5,6 +5,7 @@ from hashlib import sha512
 from tkinter import messagebox as mb
 from tkinter import simpledialog as sd
 from tkinter import ttk
+import bcrypt
 
 PROGRAM_EXIT_PROMPT = '\n程序退出'
 PLEASE_INPUT_PASSWORD_PROMPT = '请输入密码:'  # noqa
@@ -19,15 +20,17 @@ USER_NAME = os.getenv('USER')
 if USER_NAME == 'root':
     print('不要使用root权限运行!')
     sys.exit()
-ORIG_JICHOU_FILE = '/Users/%s/Library/Application Support/com.biantou.jichou/framework/password/' % USER_NAME
+ORIG_JICHOU_FILE = '/Users/%s/Library/Application Support/com.biantou.jichou/framework/password/' % USER_NAME  # 文件储存的目录
 jichou_file = ORIG_JICHOU_FILE
 com_biantou_jichou = '/Users/%s/Library/Application Support/com.biantou.jichou/' % USER_NAME
 unlock = False
 if os.path.exists(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT)):
     with open(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT), 'r') as file:
-        PASSWORD = file.read()
+        PASSWORD = file.read().strip()
 else:
     PASSWORD = None
+
+# PASSWORD: 密码的哈希值
 
 if not os.path.exists(com_biantou_jichou):
     os.mkdir(com_biantou_jichou)
@@ -47,6 +50,7 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
         else:
             print('密码必须4位数!')
     jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
+    hashed = bcrypt.hashpw(user_input.encode('utf-8'), bcrypt.gensalt(rounds=14))
 
     print('正在初始化...')
     for i in range(1, 10):
@@ -76,9 +80,9 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'password'))
                             file.write('密码错误')
 
     with open(os.path.join(com_biantou_jichou, 'framework', PASSWORD_HASH_TXT), 'w') as file:
-        file.write(sha512(user_input.encode('utf-8')).hexdigest())
+        file.write(hashed.decode('utf-8'))
 
-    PASSWORD = sha512(user_input.encode('utf-8')).hexdigest()
+    PASSWORD = hashed
     print('初始化完成')
 
 if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'readme.txt')):
@@ -91,7 +95,7 @@ if not os.path.exists(os.path.join(com_biantou_jichou, 'framework', 'readme.txt'
 if 'api' in sys.argv:
     if 'check_password' in sys.argv:
         user_password = sys.argv[3]
-        if sha512(user_password.encode('utf-8')).hexdigest() == PASSWORD:
+        if bcrypt.checkpw(user_password.encode('utf-8'), PASSWORD.encode('utf-8')):
             print('1')
         else:
             print('0')
@@ -168,7 +172,7 @@ if len(sys.argv) > 1:
         print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
             user_input = input(ASK_PASSWORD_PROMPT)
-            if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
+            if bcrypt.checkpw(user_input.encode('utf-8'), PASSWORD.encode('utf-8')):
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
@@ -198,7 +202,7 @@ if len(sys.argv) > 1:
         print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
             user_input = input(ASK_PASSWORD_PROMPT)
-            if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
+            if bcrypt.checkpw(user_input.encode('utf-8'), PASSWORD.encode('utf-8')):
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
@@ -251,7 +255,7 @@ if len(sys.argv) > 1:
         print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
             user_input = input(ASK_PASSWORD_PROMPT)
-            if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
+            if bcrypt.checkpw(user_input.encode('utf-8'), PASSWORD.encode('utf-8')):
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
@@ -280,7 +284,7 @@ if len(sys.argv) > 1:
         print(PLEASE_INPUT_PASSWORD_PROMPT)
         while True:
             user_input = input(ASK_PASSWORD_PROMPT)
-            if sha512(user_input.encode('utf-8')).hexdigest() == PASSWORD:
+            if bcrypt.checkpw(user_input.encode('utf-8'), PASSWORD.encode('utf-8')):
                 jichou_file = os.path.join(jichou_file, '/'.join(user_input), DATA_JICHOU)
                 break
             else:
@@ -336,9 +340,10 @@ if len(sys.argv) > 1:
                       'v12.2': '修复了更新日志问题',
                       'v12.3': '修复了部分的SonarQube Issues',
                       'v12.4': '修复了部分的SonarQube Issues, 优化代码',
-                      'v12.5': '修复GUI的bug',}
+                      'v12.5': '修复GUI的bug',
+                      'v13.0': '修改密码储存方式, 让记仇本密码数据更安全',}
         print(JICHOU_TERM_TITLE)
-        print('版本: v12.5')
+        print('版本: v13.0')
         print('作者: biantou')
         print('=' * 30)
         print('以下为更新日志:')
@@ -397,7 +402,7 @@ def read():
                 mb.showinfo('提示', '你没输密码,即将退出程序')
                 root.destroy()
                 return
-            if sha512(user_input1.encode('utf-8')).hexdigest() == PASSWORD:
+            if bcrypt.checkpw(user_input1.encode('utf-8'), PASSWORD.encode('utf-8')):
                 if jichou_file == ORIG_JICHOU_FILE:
                     jichou_file = os.path.join(jichou_file, '/'.join(user_input1), DATA_JICHOU)
                 unlock = True
