@@ -335,9 +335,10 @@ if len(sys.argv) > 1:
                       'v12.1': '修复了一些IDE提示的部分弱警告',
                       'v12.2': '修复了更新日志问题',
                       'v12.3': '修复了部分的SonarQube Issues',
-                      'v12.4': '修复了部分的SonarQube Issues, 优化代码'}
+                      'v12.4': '修复了部分的SonarQube Issues, 优化代码',
+                      'v12.5': '修复GUI的bug',}
         print(JICHOU_TERM_TITLE)
-        print('版本: v9.0')
+        print('版本: v12.5')
         print('作者: biantou')
         print('=' * 30)
         print('以下为更新日志:')
@@ -386,6 +387,7 @@ if len(sys.argv) > 1:
 
 print('加载GUI中...')
 
+
 def read():
     global unlock, jichou_file
     try:
@@ -433,7 +435,7 @@ def delete():
             i2 = tree.item(item1, 'values')
             context1.append('|'.join(i2))
         new_context = []
-        for line2 in context:
+        for line2 in context1:
             new_context.append(line2.rstrip('\n') + '\n')
         temp = new_context.pop(-1)
         new_context.append(temp.rstrip('\n'))
@@ -441,6 +443,7 @@ def delete():
             with open(jichou_file, 'w') as file2:
                 for line3 in new_context:
                     file2.write(line3)
+            root.after(100, read)
         except Exception as e1:
             mb.showerror('错误', '%s:%s' % (type(e).__name__, e1))
     root.focus_force()
@@ -473,7 +476,7 @@ def new():
         try:
             with open(jichou_file, 'a') as file1:
                 file1.write('\n')
-                file1.write('%s|%s|%s' % (people, time, thing))
+                file1.write('%s|%s|%s' % (people1, time1, thing1))
         except Exception as e2:
             print(e2)
         mb.showinfo('提示', '成功添加,点击确定后更新数据')
